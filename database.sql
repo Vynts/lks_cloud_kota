@@ -1,0 +1,11 @@
+CREATE DATABASE IF NOT EXISTS lks_cloud;
+USE lks_cloud;
+
+CREATE TABLE IF NOT EXISTS gallery (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    filename VARCHAR(255) NOT NULL,
+    original_size INT NOT NULL, 
+    optimized_size INT DEFAULT 0,
+    status ENUM('PROCESSING', 'COMPLETED') DEFAULT 'PROCESSING',
+    upload_time TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);

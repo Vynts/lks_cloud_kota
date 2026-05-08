@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cloud Asset Manager</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="../static/style.css">
+</head>
+<body>
+<div class="modal fade" id="healthModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content shadow-lg" style="background-color: #0d1117; border: 1px solid rgba(13, 110, 253, 0.2); border-radius: 12px;">
+            <div class="modal-header border-0 p-4 pb-0">
+                <div>
+                    <h6 class="modal-title fw-bold text-white mb-1">Infrastructure Status</h6>
+                    <p class="text-secondary small mb-0">Real-time cloud connectivity check</p>
+                </div>
+                <button type="button" class="btn-close btn-close-white small" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body p-4">
+                <div class="d-flex align-items-center justify-content-between p-3 mb-3 rounded-3" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                            <i class="fa-solid fa-database" style="font-size: 0.8rem;"></i>
+                        </div>
+                        <span class="text-white small fw-bold">Amazon RDS</span>
+                    </div>
+                    <span id="rds-status" class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.7rem;">Checking...</span>
+                </div>
+
+                <div class="d-flex align-items-center justify-content-between p-3 rounded-3" style="background-color: rgba(255, 255, 255, 0.03); border: 1px solid rgba(255, 255, 255, 0.05);">
+                    <div class="d-flex align-items-center gap-3">
+                        <div class="bg-primary bg-opacity-10 text-primary rounded-circle d-flex align-items-center justify-content-center" style="width: 35px; height: 35px;">
+                            <i class="fa-solid fa-box-archive" style="font-size: 0.8rem;"></i>
+                        </div>
+                        <span class="text-white small fw-bold">Amazon S3</span>
+                    </div>
+                    <span id="s3-status" class="badge rounded-pill bg-secondary bg-opacity-10 text-secondary" style="font-size: 0.7rem;">Checking...</span>
+                </div>
+            </div>
+            <div class="modal-footer border-0 p-4 pt-0">
+                <button type="button" class="btn btn-primary w-100 btn-sm fw-bold shadow-sm" onclick="checkHealth()">RE-SCAN SYSTEM</button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="container py-5">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <div>
+            <h2 class="fw-bold text-white mb-1">My Files & Assets</h2>
+            <p class="text-secondary small mb-0">Cloud storage automation and monitoring</p>
+        </div>
+        <div class="d-flex gap-2">
+            <button class="btn btn-outline-success btn-sm px-3 shadow-sm" data-bs-toggle="modal" data-bs-target="#healthModal" onclick="checkHealth()">
+                <i class="fa-solid fa-heart-pulse me-1"></i> System Health
+            </button>
+        </div>
+    </div>
+
+    <div class="upload-container mb-5 text-center" id="dropzone">
+        <form action="/upload" method="POST" enctype="multipart/form-data" id="uploadForm">
+            <input type="file" name="file" id="fileInput" class="d-none" accept="image/*">
+            <div class="bg-primary bg-opacity-10 text-primary rounded-3 d-inline-flex align-items-center justify-content-center mb-3" style="width: 50px; height: 50px;">
+                <i class="fa-solid fa-cloud-arrow-up fs-4"></i>
+            </div>
+            <h6 class="text-white">Click here to upload your file or drag</h6>
+            <p class="text-secondary small mb-0">PNG, JPG or WEBP (Max. 10MB)</p>
+            
+            <div id="fileStatus" class="mt-4 d-none">
+                <div class="d-inline-block p-2 rounded border border-primary border-opacity-25 bg-primary bg-opacity-10">
+                    <i class="fa-regular fa-image text-primary me-2"></i>
+                    <span id="fileName" class="text-white small"></span>
+                </div>
+                <br>
+                <button type="submit" onclick="event.stopPropagation();" class="btn btn-primary mt-3 px-5 fw-bold btn-sm">START PROCESS</button>
+            </div>
+        </form>
+    </div>
+
+    <div class="card card-dark overflow-hidden">
+        <div class="card-header bg-transparent border-0 p-4 d-flex justify-content-between align-items-center">
+            <h6 class="fw-bold m-0 text-white">Attached Files <span class="badge rounded-pill bg-primary ms-2" style="font-size: 0.65rem;">{{ files|length }} Total</span> <button onclick="window.location.reload()" class="btn btn-link btn-sm text-secondary p-0 ms-2" title="Refresh Data">
+        <i class="fa-solid fa-rotate"></i>
+    </button></h6>
+        <form action="/" method="GET" class="input-group w-25">
+            <span class="input-group-text"><i class="fa-solid fa-magnifying-glass text-secondary"></i></span>
+            <input type="text" 
+            name="q" 
+            class="form-control form-control-sm" 
+            placeholder="Search file..." 
+            value="{{ search_val }}">
+    </form>
+        </div>
+        
+        <div class="table-responsive">
+            <table class="table align-middle">
+                <thead>
+                    <tr>
+                        <th class="ps-4">FILE NAME</th>
+                        <th>ORIGINAL SIZE</th>
+                        <th>OPTIMIZED</th>
+                        <th>STATUS</th>
+                        <th class="text-end pe-4">ACTIONS</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for file in files %}
+                    <tr>
+                        <td class="ps-4">
+                            <div class="d-flex align-items-center gap-3">
+                                <div class="icon-box">
+                                    <i class="fa-regular fa-image"></i>
+                                </div>
+                                <div>
+                                    <div class="fw-bold text-white small">{{ file.filename }}</div>
+                                    <div class="text-secondary" style="font-size: 0.7rem;">{{ file.upload_time }}</div>
+                                </div>
+                            </div>
+                        </td>
+                        <td class="text-secondary small">{{ file.original_size }} KB</td>
+                        <td class="text-primary fw-bold small">{{ file.optimized_size if file.optimized_size else '-' }} KB</td>
+                        <td>
+                            {% if file.status == 'COMPLETED' %}
+                                <span class="badge badge-done text-nowrap"><i class="fa-solid fa-check-circle me-1"></i> Done</span>
+                            {% else %}
+                                <span class="badge badge-running text-nowrap"><i class="fa-solid fa-sync fa-spin me-1"></i> Processing</span>
+                            {% endif %}
+                        </td>
+                        <td class="text-end pe-4">
+                            <a href="/download/{{ file.filename }}" class="btn btn-link btn-sm text-primary text-decoration-none fw-bold">Download</a>
+                            <a href="/delete/{{ file.filename }}" class="btn btn-link btn-sm text-danger text-decoration-none fw-bold">Delete</a>
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+    const dropzone = document.getElementById('dropzone');
+    const fileInput = document.getElementById('fileInput');
+    const fileStatus = document.getElementById('fileStatus');
+    const fileNameSpan = document.getElementById('fileName');
+
+    function handleFileSelection(files) {
+        if (files.length > 0) {
+            fileNameSpan.innerText = files[0].name;
+            fileStatus.classList.remove('d-none');
+        }
+    }
+
+    dropzone.addEventListener('click', () => fileInput.click());
+
+    fileInput.addEventListener('change', function() {
+        handleFileSelection(this.files);
+    });
+
+    dropzone.addEventListener('dragover', (e) => { 
+        e.preventDefault(); 
+        dropzone.style.borderColor = '#0d6efd'; 
+        dropzone.style.backgroundColor = '#0d1117'; 
+    });
+
+    dropzone.addEventListener('dragleave', () => { 
+        dropzone.style.borderColor = '#0d6efd'; 
+        dropzone.style.backgroundColor = '#080808'; 
+    });
+
+    dropzone.addEventListener('drop', (e) => {
+        e.preventDefault();
+        dropzone.style.borderColor = '#0d6efd';
+        dropzone.style.backgroundColor = '#080808';
+
+        const droppedFiles = e.dataTransfer.files;
+        if (droppedFiles.length > 0) {
+            fileInput.files = droppedFiles; 
+            handleFileSelection(droppedFiles);
+        }
+    });
+
+    function checkHealth() {
+    const rdsText = document.getElementById('rds-status');
+    const s3Text = document.getElementById('s3-status');
+    
+    rdsText.innerText = "Checking...";
+    s3Text.innerText = "Checking...";
+
+    fetch('/health-check')
+        .then(response => response.json())
+        .then(data => {
+            rdsText.innerText = data.rds.state;
+            rdsText.className = 'fw-bold ' + data.rds.color;
+            
+            s3Text.innerText = data.s3.state;
+            s3Text.className = 'fw-bold ' + data.s3.color;
+        })
+        .catch(() => {
+            rdsText.innerText = "Error Fetching";
+            s3Text.innerText = "Error Fetching";
+        });
+}
+</script>
+</body>
+</html>
