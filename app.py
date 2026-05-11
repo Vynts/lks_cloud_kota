@@ -9,7 +9,7 @@ app = Flask(__name__)
 app.secret_key = os.getenv('secret_key')
 
 @app.route('/')
-def dasdhboard():
+def dashboard():
     search_q = request.args.get('q', '')
     data_files = get_all_files(search_q)
     
