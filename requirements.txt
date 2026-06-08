@@ -1,0 +1,4 @@
+Flask
+boto3
+mysql-connector-python
+python-dotenv

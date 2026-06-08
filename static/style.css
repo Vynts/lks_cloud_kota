@@ -1,0 +1,94 @@
+        body { 
+            background-color: #000000; 
+            color: #e0e0e0;
+            font-family: 'Inter', sans-serif;
+        }
+
+        /* Card Setup */
+        .card-dark {
+            background-color: #0c0c0c;
+            border: 1px solid #1a1a1a;
+            border-radius: 12px;
+        }
+
+        /* Fix Table Putih */
+        .table-responsive {
+            background-color: #0c0c0c;
+            border-radius: 0 0 12px 12px;
+        }
+
+        .table {
+            color: #e0e0e0;
+            margin-bottom: 0;
+            border-color: #1a1a1a;
+        }
+
+        /* Bagian Header Tabel */
+        .table thead th {
+            background-color: #111111;
+            color: #0d6efd; /* Blue */
+            border-bottom: 1px solid #1a1a1a;
+            font-size: 0.75rem;
+            padding: 15px;
+        }
+
+        /* Bagian Body Tabel */
+        .table tbody td {
+            background-color: #0c0c0c; /* Menghapus Putih */
+            border-bottom: 1px solid #1a1a1a;
+            padding: 15px;
+        }
+
+        .table tbody tr:hover td {
+            background-color: #151515;
+        }
+
+        /* Custom Dropzone */
+        .upload-container {
+            border: 2px dashed #0d6efd;
+            background-color: #080808;
+            border-radius: 16px;
+            padding: 50px;
+            transition: 0.3s;
+            cursor: pointer;
+        }
+        .upload-container:hover {
+            background-color: #0d1117;
+        }
+
+        /* Icon Box Blue */
+        .icon-box {
+            width: 40px;
+            height: 40px;
+            background-color: rgba(13, 110, 253, 0.15);
+            color: #0d6efd;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+        }
+
+        /* Badges */
+        .badge-done {
+            background-color: rgba(25, 135, 84, 0.2);
+            color: #198754;
+            border: 1px solid rgba(25, 135, 84, 0.3);
+        }
+        .badge-running {
+            background-color: rgba(13, 110, 253, 0.15);
+            color: #0d6efd;
+            border: 1px solid rgba(13, 110, 253, 0.3);
+        }
+
+        /* Search Input */
+        .form-control, .input-group-text {
+            background-color: #111111;
+            border: 1px solid #1a1a1a;
+            color: white;
+        }
+        .form-control:focus {
+            background-color: #151515;
+            color: white;
+            border-color: #0d6efd;
+            box-shadow: none;
+        }
