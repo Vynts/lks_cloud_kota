@@ -26,9 +26,9 @@ python3 app.py
 Ubah file .env yang ada di dalam direktori dengan yang sudah ditentukan
 ``` 
 # Database
-DB_HOST = 'yourdatabaseendpoint'
-DB_USER = 'yourdatabaseuser'
-DB_PASSWORD = 'yourdatabasepassword'
+HOST = 'yourdatabaseendpoint'
+USER = 'yourdatabaseuser'
+PASSWORD = 'yourdatabasepassword'
 DATABASE = 'yourdatabasename'
 
 # S3 Bucket name
