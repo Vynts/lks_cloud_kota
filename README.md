@@ -9,7 +9,7 @@ buat venv untuk menginstall library untuk python
 ``` 
 sudo apt install python3-venv
 
-python3 -m venv .venv
+sudo python3 -m venv .venv
 source .venv/bin/activate
 ```
 
