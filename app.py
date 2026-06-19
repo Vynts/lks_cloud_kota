@@ -62,8 +62,14 @@ def delete_file(filename):
     try:
         target_key = f"validated/{filename}"
 
-        s3 = boto3.client('s3')
-        s3.delete_object(Bucket=os.getenv('BUCKET_NAME'), Key=target_key)
+        if target_key:
+            s3 = boto3.client('s3')
+            s3.delete_object(Bucket=os.getenv('BUCKET_NAME'), Key=target_key)
+        else: 
+            target_key = f"uploads/{filename}"
+
+            s3 = boto3.client('s3')
+            s3.delete_object(Bucket=os.getenv('BUCKET_NAME'), Key=target_key)
         
         conn = db_connection()
         cursor = conn.cursor()
@@ -87,15 +93,28 @@ def download_file(filename):
         bucket_name = os.getenv('BUCKET_NAME')
         
         target_key = f"validated/{filename}"
-        
-        url = s3.generate_presigned_url('get_object',
+
+        if target_key:
+            url = s3.generate_presigned_url('get_object',
             Params={
                 'Bucket': bucket_name,
                 'Key': target_key,
                 'ResponseContentDisposition': f'attachment; filename="hasil_{filename}"'
             },
             ExpiresIn=300 
-        )
+            )
+        else: 
+            target_key = f"uploads/{filename}"
+
+            url = s3.generate_presigned_url('get_object',
+            Params={
+                'Bucket': bucket_name,
+                'Key': target_key,
+                'ResponseContentDisposition': f'attachment; filename="hasil_{filename}"'
+            },
+            ExpiresIn=300 
+            )
+        
         return redirect(url)
         
     except Exception as e:
