@@ -15,7 +15,7 @@ source .venv/bin/activate
 
 install library yang akan digunakan oleh aplikasi
 ``` 
-sudo ./venv/bin/python3 -m pip install -r requirements.txt
+sudo .venv/bin/python3 -m pip install -r requirements.txt
 ```
 
 jalankan aplikasi
