@@ -13,9 +13,9 @@ sudo python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-install library yang akan digunakan oleh aplikas
+install library yang akan digunakan oleh aplikasi
 ``` 
-pip install -r requirements.txt
+sudo ./venv/bin/pip install -r requirements.txt
 ```
 
 jalankan aplikasi
