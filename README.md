@@ -20,7 +20,7 @@ pip install -r requirements.txt
 
 jalankan aplikasi
 ``` 
-python3 app.py
+sudo .venv/bin/python3 app.py
 ```
 
 Ubah file .env yang ada di dalam direktori dengan yang sudah ditentukan
